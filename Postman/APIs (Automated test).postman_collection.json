@@ -1,0 +1,3307 @@
+{
+	"info": {
+		"_postman_id": "efc30667-49c7-493a-923e-303470e12f0c",
+		"name": "APIs (Automated test)",
+		"description": "All APIs in TG-Cargo project.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Auth",
+			"item": [
+				{
+					"name": "1.1. Sign up & Sign in",
+					"item": [
+						{
+							"name": "1.1.1. Check company exist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status test\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"  const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.company_exist).to.be.oneOf([true,false]);",
+											"});",
+											"",
+											"console.log(responseJson);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"Tax_ID\", _.random(1000000000000, 9999999999999));",
+											"pm.environment.set(\"postal\", _.random(10000, 99999));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "taxid",
+											"value": "{{Tax_ID}}",
+											"type": "text"
+										},
+										{
+											"key": "province",
+											"value": "{{province}}",
+											"type": "text"
+										},
+										{
+											"key": "postal",
+											"value": "{{postal}}",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "{{address}}",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "{{companyName}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/checktaxid",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"checktaxid"
+									]
+								},
+								"description": "When user first sign in to platform. Check Tax ID provided by user. If Tax ID existed in database. map this new user with found company. If not, create new company according from company data provided by user."
+							},
+							"response": []
+						},
+						{
+							"name": "1.1.2.1. Sign Up (ff)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"username_ff\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+											"pm.environment.set(\"password_ff\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+											"pm.environment.set(\"email_ff\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"User was registered successfully!\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_ff}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_ff}}",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "{{email_ff}}",
+											"type": "text"
+										},
+										{
+											"key": "taxid",
+											"value": "{{Tax_ID}}",
+											"type": "text"
+										},
+										{
+											"key": "roles",
+											"value": "freight-forwarder",
+											"type": "text"
+										},
+										{
+											"key": "prefix",
+											"value": "{{prefix}}",
+											"type": "text"
+										},
+										{
+											"key": "firstname",
+											"value": "{{firstname}}",
+											"type": "text"
+										},
+										{
+											"key": "lastname",
+											"value": "{{lastname}}",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signup/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signup",
+										""
+									]
+								},
+								"description": "After user pass company check. proceeded to sign up."
+							},
+							"response": []
+						},
+						{
+							"name": "1.1.2.2. Sign Up (driver)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"username_driver\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+											"pm.environment.set(\"password_driver\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+											"pm.environment.set(\"email_driver\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"User was registered successfully!\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "{{email_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "taxid",
+											"value": "{{Tax_ID}}",
+											"type": "text"
+										},
+										{
+											"key": "roles",
+											"value": "driver",
+											"type": "text"
+										},
+										{
+											"key": "prefix",
+											"value": "{{prefix}}",
+											"type": "text"
+										},
+										{
+											"key": "firstname",
+											"value": "{{firstname}}",
+											"type": "text"
+										},
+										{
+											"key": "lastname",
+											"value": "{{lastname}}",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signup/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signup",
+										""
+									]
+								},
+								"description": "After user pass company check. proceeded to sign up."
+							},
+							"response": []
+						},
+						{
+							"name": "1.1.3.1. Sign in (ff)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_ff\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_ff\"));",
+											"  pm.expect(responseJson.role).to.eql(\"freight-forwarder\");",
+											"});",
+											"",
+											"pm.environment.set(\"jwt_ff\", responseJson.accessToken);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_ff}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_ff}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signin",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signin"
+									]
+								},
+								"description": "For user to sign in to platform. Generate JWT Token for user."
+							},
+							"response": []
+						},
+						{
+							"name": "1.1.3.2. Sign in (driver)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_driver\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_driver\"));",
+											"  pm.expect(responseJson.role).to.eql(\"driver\");",
+											"});",
+											"",
+											"pm.environment.set(\"jwt_driver\", responseJson.accessToken);",
+											"pm.environment.set(\"driver_id\", responseJson.id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_driver}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signin",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signin"
+									]
+								},
+								"description": "For user to sign in to platform. Generate JWT Token for user."
+							},
+							"response": []
+						}
+					],
+					"description": "Sign up & Sign in APIs",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.2. Reset Password",
+					"item": [
+						{
+							"name": "1.2.1. Request reset pwd link",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.tokenForgotPwdLink).is.not.undefined;",
+											"});",
+											"",
+											"pm.environment.set(\"tokenForgotPwdLink\", responseJson.tokenForgotPwdLink);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{url}}/apis/auth/forgot/:email",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"forgot",
+										":email"
+									],
+									"variable": [
+										{
+											"key": "email",
+											"value": "{{email_ff}}"
+										}
+									]
+								},
+								"description": "Get email from user to generate reset password link"
+							},
+							"response": []
+						},
+						{
+							"name": "1.2.2. Vertify reset pwd",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.UserId).is.not.undefined;",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://{{url}}/apis/auth/reset/:tokenForgotPwdLink",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"reset",
+										":tokenForgotPwdLink"
+									],
+									"variable": [
+										{
+											"key": "tokenForgotPwdLink",
+											"value": "{{tokenForgotPwdLink}}"
+										}
+									]
+								},
+								"description": "Check reset password link"
+							},
+							"response": []
+						},
+						{
+							"name": "1.2.3. Save changed password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.status).to.eql(\"updated\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "token",
+											"value": "{{tokenForgotPwdLink}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{new_password}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/reset/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"reset",
+										""
+									]
+								},
+								"description": "When link valid. User can update their password here."
+							},
+							"response": []
+						},
+						{
+							"name": "1.2.4. Sign in with new password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_ff\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_ff\"));",
+											"  pm.expect(responseJson.role).to.eql(\"freight-forwarder\");",
+											"});",
+											"",
+											"pm.environment.set(\"jwt_ff\", responseJson.accessToken);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_ff}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{new_password}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signin",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signin"
+									]
+								},
+								"description": "For user to sign in to platform. Generate JWT Token for user."
+							},
+							"response": []
+						}
+					],
+					"description": "Reset password APIs",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "For test only",
+					"item": [
+						{
+							"name": "(For test only) Sign up (admin)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"username_admin\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+											"pm.environment.set(\"password_admin\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+											"pm.environment.set(\"email_admin\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"User was registered successfully!\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_admin}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_admin}}",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "{{email_admin}}",
+											"type": "text"
+										},
+										{
+											"key": "taxid",
+											"value": "{{Tax_ID}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "roles",
+											"value": "admin",
+											"type": "text"
+										},
+										{
+											"key": "prefix",
+											"value": "{{prefix}}",
+											"type": "text"
+										},
+										{
+											"key": "firstname",
+											"value": "{{firstname}}",
+											"type": "text"
+										},
+										{
+											"key": "lastname",
+											"value": "{{lastname}}",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signup/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signup",
+										""
+									]
+								},
+								"description": "After user pass company check. proceeded to sign up."
+							},
+							"response": []
+						},
+						{
+							"name": "(For test only) Sign up (tg-admin)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"username_tgadmin\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+											"pm.environment.set(\"password_tgadmin\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+											"pm.environment.set(\"email_tgadmin\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"User was registered successfully!\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_tgadmin}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_tgadmin}}",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "{{email_tgadmin}}",
+											"type": "text"
+										},
+										{
+											"key": "taxid",
+											"value": "{{Tax_ID}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "roles",
+											"value": "tg-admin",
+											"type": "text"
+										},
+										{
+											"key": "prefix",
+											"value": "{{prefix}}",
+											"type": "text"
+										},
+										{
+											"key": "firstname",
+											"value": "{{firstname}}",
+											"type": "text"
+										},
+										{
+											"key": "lastname",
+											"value": "{{lastname}}",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signup/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signup",
+										""
+									]
+								},
+								"description": "After user pass company check. proceeded to sign up."
+							},
+							"response": []
+						},
+						{
+							"name": "(For test only) Sign in (admin)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_admin\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_admin\"));",
+											"  pm.expect(responseJson.role).to.eql(\"admin\");",
+											"});",
+											"",
+											"pm.environment.set(\"jwt_admin\", responseJson.accessToken);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_admin}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_admin}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signin",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signin"
+									]
+								},
+								"description": "For user to sign in to platform. Generate JWT Token for user."
+							},
+							"response": []
+						},
+						{
+							"name": "(For test only) Sign in (tg-admin)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_tgadmin\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_tgadmin\"));",
+											"  pm.expect(responseJson.role).to.eql(\"tg-admin\");",
+											"});",
+											"",
+											"pm.environment.set(\"jwt_tgadmin\", responseJson.accessToken);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_tgadmin}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_tgadmin}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/auth/signin",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"auth",
+										"signin"
+									]
+								},
+								"description": "For user to sign in to platform. Generate JWT Token for user."
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "User authentication APIs",
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "2. User Menu",
+			"item": [
+				{
+					"name": "2.1. Get user detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/user",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"user"
+							]
+						},
+						"description": "Query user's detail"
+					},
+					"response": []
+				},
+				{
+					"name": "2.2. Edit personal information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.message).to.eql(\"updated\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "avatar",
+									"value": "/assets/img/misc/profile.jpg",
+									"type": "text"
+								},
+								{
+									"key": "prefix",
+									"value": "{{prefix}}",
+									"type": "text"
+								},
+								{
+									"key": "firstname",
+									"value": "{{firstname}}",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "{{lastname}}",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "{{phone}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/user/edit-personal-information",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"user",
+								"edit-personal-information"
+							]
+						},
+						"description": "Edit user's detail information"
+					},
+					"response": []
+				},
+				{
+					"name": "2.3. Get company detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/user/user-company-detail",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"user",
+								"user-company-detail"
+							]
+						},
+						"description": "Query user's company detail."
+					},
+					"response": []
+				}
+			],
+			"description": "Query user's detail",
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{jwt_ff}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "x-access-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "3. TGAdmin",
+			"item": [
+				{
+					"name": "3.1. Dashboard",
+					"item": [
+						{
+							"name": "4.1.1. Create job (move here for test)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"Job was created successfully!\");",
+											"});",
+											"",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "apikey",
+									"apikey": [
+										{
+											"key": "value",
+											"value": "{{jwt_ff}}",
+											"type": "string"
+										},
+										{
+											"key": "key",
+											"value": "x-access-token",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "0",
+											"type": "text"
+										},
+										{
+											"key": "awbNumber",
+											"value": "131-56591081",
+											"type": "text"
+										},
+										{
+											"key": "hwbSerialNumber",
+											"value": "MLC10131958",
+											"type": "text"
+										},
+										{
+											"key": "flightNumber",
+											"value": "JL0708",
+											"type": "text"
+										},
+										{
+											"key": "jobNumber",
+											"value": "A0020640302799",
+											"type": "text"
+										},
+										{
+											"key": "customsEntryNumber",
+											"value": "A0020640302799",
+											"type": "text"
+										},
+										{
+											"key": "customsEntryNumberDate",
+											"value": "2021-06-02",
+											"type": "text"
+										},
+										{
+											"key": "date",
+											"value": "{{date}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "numberOfPieces",
+											"value": "{{numberOfPieces}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "dockNumber",
+											"value": "{{dockNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeHours",
+											"value": "{{pickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeMinutes",
+											"value": "{{pickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "qrCode",
+											"value": "{{qrCode}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeHours",
+											"value": "{{confPickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeMinutes",
+											"value": "{{confPickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "truckNumber",
+											"value": "{{truckNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "driver",
+											"value": "{{driver}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "rating",
+											"value": "{{rating}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "comment",
+											"value": "{{comment}}",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/create",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										"create"
+									]
+								},
+								"description": "API to create job"
+							},
+							"response": []
+						},
+						{
+							"name": "3.1.1 Overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson[0].jobNumber).to.eql(\"A0020640302799\");",
+											"});",
+											"",
+											"pm.environment.set(\"job_id\", responseJson[responseJson.length - 1]._id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{url}}/apis/tgadmin/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"tgadmin",
+										""
+									]
+								},
+								"description": "Query all jobs status in database"
+							},
+							"response": []
+						}
+					],
+					"description": "TG-Admin dashboard API"
+				},
+				{
+					"name": "3.2. Job Requests",
+					"item": [
+						{
+							"name": "3.2.1. Job detail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.jobNumber).to.eql(\"A0020640302799\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/tgadmin/:job_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"tgadmin",
+										":job_id"
+									],
+									"variable": [
+										{
+											"key": "job_id",
+											"value": "{{job_id}}"
+										}
+									]
+								},
+								"description": "Query all jobs detail in all company"
+							},
+							"response": []
+						},
+						{
+							"name": "3.2.2. Select pickup time",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"Pick Up Successful\");",
+											"});",
+											"",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "dockNumber",
+											"value": "1234",
+											"type": "text"
+										},
+										{
+											"key": "pickupTimeHours",
+											"value": "23",
+											"type": "text"
+										},
+										{
+											"key": "pickupTimeMinutes",
+											"value": "59",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/tgadmin/:job_id/pickup",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"tgadmin",
+										":job_id",
+										"pickup"
+									],
+									"variable": [
+										{
+											"key": "job_id",
+											"value": "{{job_id}}"
+										}
+									]
+								},
+								"description": "Select dock number and pickup time for select job"
+							},
+							"response": []
+						}
+					],
+					"description": "TG-Admin Job request page APIs"
+				}
+			],
+			"description": "TG-Admin related APIs",
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{jwt_tgadmin}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "x-access-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Company (FF)",
+			"item": [
+				{
+					"name": "4.1. Job Request",
+					"item": [
+						{
+							"name": "4.1.2. Jobs overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson[0].jobNumber).to.eql(\"A0020640302799\");",
+											"});",
+											"",
+											"pm.environment.set(\"job_id\", responseJson[0]._id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										""
+									]
+								},
+								"description": "Show all job in company"
+							},
+							"response": []
+						},
+						{
+							"name": "4.1.3. Job detail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.jobNumber).to.eql(\"A0020640302799\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "0",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "awbNumber",
+											"value": "{{awbNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "hwbSerialNumber",
+											"value": "{{hwbSerialNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "flightNumber",
+											"value": "{{flightNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "jobNumber",
+											"value": "{{jobNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "customsEntryNumber",
+											"value": "{{customsEntryNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "customsEntryNumberDate",
+											"value": "{{customsEntryNumberDate}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "date",
+											"value": "{{date}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "numberOfPieces",
+											"value": "{{numberOfPieces}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "dockNumber",
+											"value": "{{dockNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeHours",
+											"value": "{{pickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeMinutes",
+											"value": "{{pickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "qrCode",
+											"value": "{{qrCode}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeHours",
+											"value": "{{confPickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeMinutes",
+											"value": "{{confPickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "truckNumber",
+											"value": "{{truckNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "driver",
+											"value": "{{driver}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "rating",
+											"value": "{{rating}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "comment",
+											"value": "{{comment}}",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/:job_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										":job_id"
+									],
+									"variable": [
+										{
+											"key": "job_id",
+											"value": "{{job_id}}"
+										}
+									]
+								},
+								"description": "Show selected job datail"
+							},
+							"response": []
+						},
+						{
+							"name": "4.1.4. Select driver",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"Driver selected\");",
+											"});",
+											"",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "driver",
+											"value": "{{driver_id}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/:job_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										":job_id"
+									],
+									"variable": [
+										{
+											"key": "job_id",
+											"value": "{{job_id}}"
+										}
+									]
+								},
+								"description": "Select driver for select job"
+							},
+							"response": []
+						},
+						{
+							"name": "4.1.5. Job detail with driver",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.jobNumber).to.eql(\"A0020640302799\");",
+											"  pm.expect(responseJson.driver[0]).is.not.undefined;",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "status",
+											"value": "0",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "awbNumber",
+											"value": "{{awbNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "hwbSerialNumber",
+											"value": "{{hwbSerialNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "flightNumber",
+											"value": "{{flightNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "jobNumber",
+											"value": "{{jobNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "customsEntryNumber",
+											"value": "{{customsEntryNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "customsEntryNumberDate",
+											"value": "{{customsEntryNumberDate}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "date",
+											"value": "{{date}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "numberOfPieces",
+											"value": "{{numberOfPieces}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "dockNumber",
+											"value": "{{dockNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeHours",
+											"value": "{{pickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "pickupTimeMinutes",
+											"value": "{{pickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "qrCode",
+											"value": "{{qrCode}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeHours",
+											"value": "{{confPickupTimeHours}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "confPickupTimeMinutes",
+											"value": "{{confPickupTimeMinutes}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "truckNumber",
+											"value": "{{truckNumber}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "driver",
+											"value": "{{driver}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "rating",
+											"value": "{{rating}}",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "comment",
+											"value": "{{comment}}",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/:job_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										":job_id"
+									],
+									"variable": [
+										{
+											"key": "job_id",
+											"value": "{{job_id}}"
+										}
+									]
+								},
+								"description": "Show selected job datail"
+							},
+							"response": []
+						}
+					],
+					"description": "Everything related to Job"
+				},
+				{
+					"name": "4.2. Dashboard",
+					"item": [
+						{
+							"name": "4.2.1. Overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson[0].jobNumber).to.eql(\"A0020640302799\");",
+											"});",
+											"",
+											"pm.environment.set(\"job_id\", responseJson[0]._id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/jrq/",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"jrq",
+										""
+									]
+								},
+								"description": "Show all job in company"
+							},
+							"response": []
+						}
+					],
+					"description": "APIs to show company overview."
+				},
+				{
+					"name": "4.3. Truck Driver",
+					"item": [
+						{
+							"name": "4.3.1. Driver Overview",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson[0]._id).to.eql(pm.variables.get(\"driver_id\"));",
+											"",
+											"});",
+											"",
+											"pm.environment.set(\"job_id\", responseJson[0]._id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{url}}/apis/ff/tdv/overview",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"tdv",
+										"overview"
+									]
+								},
+								"description": "View all driver in selected company."
+							},
+							"response": []
+						},
+						{
+							"name": "4.3.2. Driver detail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson._id).to.eql(pm.variables.get(\"driver_id\"));",
+											"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_driver\"));",
+											"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_driver\"));",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{url}}/apis/ff/tdv/:driver_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"tdv",
+										":driver_id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "driver_id",
+											"value": "{{driver_id}}"
+										}
+									]
+								},
+								"description": "View selected driver in selected company"
+							},
+							"response": []
+						},
+						{
+							"name": "4.3.3. Driver  edit",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.message).to.eql(\"updated\");",
+											"});",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "avatar",
+											"value": "/assets/img/misc/profile.jpg",
+											"type": "text"
+										},
+										{
+											"key": "detail",
+											"value": "{ \"prefix\": \"{{prefix}}\", \"firstname\": \"{{firstname}}\", \"lastname\": \"{{lastname}}\", \"phone\": \"{{phone}}\", \"address\": \"{{address}}\", \"province\": \"{{province}}\", \"zipcode\": \"{{postal}}\" }",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "12345",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/tdv/edit/:driver_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"tdv",
+										"edit",
+										":driver_id"
+									],
+									"variable": [
+										{
+											"key": "driver_id",
+											"value": "{{driver_id}}"
+										}
+									]
+								},
+								"description": "Edit selected driver"
+							},
+							"response": []
+						},
+						{
+							"name": "4.3.4. Create driver",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson.id).is.not.undefined;",
+											"});",
+											"",
+											"pm.environment.set(\"new_driver_id\", responseJson.id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"username_driver\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+											"pm.environment.set(\"password_driver\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+											"pm.environment.set(\"email_driver\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "{{username_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "{{email_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{password_driver}}",
+											"type": "text"
+										},
+										{
+											"key": "avatar",
+											"value": "{{avatar}}",
+											"type": "text"
+										},
+										{
+											"key": "detail",
+											"value": "{ \"prefix\": \"{{prefix}}\", \"firstname\": \"{{firstname}}\", \"lastname\": \"{{lastname}}\", \"phone\": \"{{phone}}\", \"address\": \"{{address}}\", \"province\": \"{{province}}\", \"zipcode\": \"{{postal}}\" }",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://{{url}}/apis/ff/tdv/create",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"tdv",
+										"create"
+									]
+								},
+								"description": "Create new driver and assign them to creator's company."
+							},
+							"response": []
+						},
+						{
+							"name": "4.3.5. New driver detail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status return 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"const responseJson = pm.response.json();",
+											"",
+											"pm.test(\"Response return as expect\", () => {",
+											"  pm.expect(responseJson._id).to.eql(pm.variables.get(\"new_driver_id\"));",
+											"});",
+											"",
+											"pm.environment.set(\"free_driver_id\", responseJson._id);",
+											"",
+											"console.log(responseJson);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://{{url}}/apis/ff/tdv/:driver_id",
+									"protocol": "http",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"apis",
+										"ff",
+										"tdv",
+										":driver_id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "driver_id",
+											"value": "{{new_driver_id}}"
+										}
+									]
+								},
+								"description": "View selected driver in selected company"
+							},
+							"response": []
+						}
+					],
+					"description": "APIs for company's truck driver management"
+				}
+			],
+			"description": "Every path related to company APIs",
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{jwt_ff}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "x-access-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Driver",
+			"item": [
+				{
+					"name": "5.1. Job overview",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson[0].jobNumber).to.eql(\"A0020640302799\");",
+									"});",
+									"",
+									"pm.environment.set(\"job_id\", responseJson[0]._id);",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/driver/overview",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"driver",
+								"overview"
+							]
+						},
+						"description": "Query all jobs assign to this driver"
+					},
+					"response": []
+				},
+				{
+					"name": "5.2. Job detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.jobNumber).to.eql(\"A0020640302799\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/driver/:job_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"driver",
+								":job_id"
+							],
+							"variable": [
+								{
+									"key": "job_id",
+									"value": "{{job_id}}"
+								}
+							]
+						},
+						"description": "View this driver's job detail"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{jwt_driver}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "x-access-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Admin",
+			"item": [
+				{
+					"name": "6.1. Get all Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"",
+									"});",
+									"",
+									"pm.environment.set(\"company_id\", responseJson[responseJson.length - 1]._id);",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company"
+							]
+						},
+						"description": "Query all companies in database"
+					},
+					"response": []
+				},
+				{
+					"name": "6.2. Get company detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"",
+									"});",
+									"",
+									"pm.environment.set(\"company_detail_id\", responseJson.company_detail.company_detail[0]._id);",
+									"pm.environment.set(\"driver_id\", responseJson.user_detail[responseJson.user_detail.length - 2]._id);",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								}
+							]
+						},
+						"description": "Get selected company detail"
+					},
+					"response": []
+				},
+				{
+					"name": "6.3. Update selected company information",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.status).to.eql(\"updated\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "companyName",
+									"value": "{{companyName}}",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "{{address}}",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "{{province}}",
+									"type": "text"
+								},
+								{
+									"key": "postal",
+									"value": "{{postal}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_detail_id/update",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_detail_id",
+								"update"
+							],
+							"variable": [
+								{
+									"key": "company_detail_id",
+									"value": "{{company_detail_id}}"
+								}
+							]
+						},
+						"description": "Update selected company detail"
+					},
+					"response": []
+				},
+				{
+					"name": "6.4. Get company detail after update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"",
+									"});",
+									"",
+									"pm.environment.set(\"company_detail_id\", responseJson.company_detail.company_detail[0]._id);",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								}
+							]
+						},
+						"description": "Get selected company detail"
+					},
+					"response": []
+				},
+				{
+					"name": "6.5. View user detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  ",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id/:user_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								},
+								{
+									"key": "user_id",
+									"value": "{{driver_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.6. Edit user detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.message).to.eql(\"updated\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"username_driver\", pm.variables.replaceIn(\"{{$randomUserName}}\"));",
+									"pm.environment.set(\"password_driver\", pm.variables.replaceIn(\"{{$randomPassword}}\"));",
+									"pm.environment.set(\"email_driver\", pm.variables.replaceIn(\"{{$randomExampleEmail}}\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{username_driver}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password_driver}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{email_driver}}",
+									"type": "text"
+								},
+								{
+									"key": "detail",
+									"value": "{ \"prefix\": \"{{prefix}}\", \"firstname\": \"{{firstname}}\", \"lastname\": \"{{lastname}}\", \"phone\": \"{{phone}}\", \"address\": \"{{address}}\", \"province\": \"{{province}}\", \"zipcode\": \"{{postal}}\" }",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"value": "/assets/img/misc/profile.jpg",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id/:user_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								},
+								{
+									"key": "user_id",
+									"value": "{{driver_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.7. View user detail after edit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.username).to.eql(pm.environment.get(\"username_driver\"));",
+									"  pm.expect(responseJson.email).to.eql(pm.environment.get(\"email_driver\"));",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id/:user_id",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								},
+								{
+									"key": "user_id",
+									"value": "{{driver_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.8. Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.status).to.eql(\"Successful deletion\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "{{new_driver_id}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id/delete_user",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id",
+								"delete_user"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.9. Delete user (has uncomplete job)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status return 418\", function () {",
+									"    pm.response.to.have.status(418);",
+									"});",
+									"",
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Response return as expect\", () => {",
+									"  pm.expect(responseJson.message).to.eql(\"Can't delete. This driver has a job that doesn't complete\");",
+									"});",
+									"",
+									"console.log(responseJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "{{driver_id}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{url}}/apis/admin/company/:company_id/delete_user",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"apis",
+								"admin",
+								"company",
+								":company_id",
+								"delete_user"
+							],
+							"variable": [
+								{
+									"key": "company_id",
+									"value": "{{company_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Platform's admin related APIs",
+			"auth": {
+				"type": "apikey",
+				"apikey": [
+					{
+						"key": "value",
+						"value": "{{jwt_admin}}",
+						"type": "string"
+					},
+					{
+						"key": "key",
+						"value": "x-access-token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "username"
+		}
+	]
+}
