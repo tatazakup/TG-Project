@@ -1,11 +1,11 @@
 {
   "proxy": "http://localhost:8081",
   "scripts": {
-    "install-package": "cd ./APIs && npm install && cd ../Front-end && npm install",
+    "install-package": "npm install && cd ./APIs && npm install && cd ../Front-end && npm install",
     "client": "cd Front-end && npm run serve",
-    "server": "cd APIs && nodemon server.js",
+    "server": "cd APIs && node server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
-    },
+  },
   "devDependencies": {
     "concurrently": "^6.2.0"
   }
