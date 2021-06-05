@@ -1,0 +1,11 @@
+{
+  "proxy": "http://localhost:8081",
+  "scripts": {
+    "client": "cd Front-end && npm run serve",
+    "server": "cd APIs && nodemon server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+  "devDependencies": {
+    "concurrently": "^6.2.0"
+  }
+}
