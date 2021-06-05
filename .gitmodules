@@ -1,0 +1,6 @@
+[submodule "Front-end"]
+	path = Front-end
+	url = https://github.com/tatazakup/tg-queue
+[submodule "APIs"]
+	path = APIs
+	url = https://github.com/tatazakup/TG-Catgo
